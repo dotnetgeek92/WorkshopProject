@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace SCEW.Controllers
 {
-    public class AdminController : Controller
+    public class AdminController : AdminBaseController
     {
         // GET: Admin
         public ActionResult Index()
@@ -15,6 +15,11 @@ namespace SCEW.Controllers
         }
 
         public ActionResult Dashboard()
+        {
+            return View();
+        }
+
+        public ActionResult AddProduct()
         {
             return View();
         }

@@ -45,10 +45,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -126,12 +134,55 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminBaseController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\DB\contact.cs">
+      <DependentUpon>SCEWDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DB\ErrorLog.cs">
+      <DependentUpon>SCEWDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DB\RoleActionMaster.cs">
+      <DependentUpon>SCEWDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DB\RolesAndRightsMaster.cs">
+      <DependentUpon>SCEWDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DB\RolesMaster.cs">
+      <DependentUpon>SCEWDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DB\SCEWDataModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SCEWDataModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DB\SCEWDataModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SCEWDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DB\SCEWDataModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SCEWDataModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DB\User.cs">
+      <DependentUpon>SCEWDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DB\UserLog.cs">
+      <DependentUpon>SCEWDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\AppConstants.cs" />
+    <Compile Include="Util\SCEW_Utitlity.cs" />
+    <Compile Include="Util\JsonResponseData.cs" />
+    <Compile Include="Util\SessionUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\assets\audio\Water_Lily.mp3" />
@@ -634,6 +685,16 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Models\DB\SCEWDataModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SCEWDataModel.Context.cs</LastGenOutput>
+      <DependentUpon>SCEWDataModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="Models\DB\SCEWDataModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SCEWDataModel.edmx</DependentUpon>
+      <LastGenOutput>SCEWDataModel.cs</LastGenOutput>
+    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\lib\font-awesome\fonts\fontawesome-webfont.eot" />
@@ -675,6 +736,13 @@
     <Content Include="Content\assets\vendor\fonts\pe-icon-7-stroke\Pe-icon-7-stroke.eot" />
     <Content Include="Content\assets\vendor\fonts\pe-icon-7-stroke\Pe-icon-7-stroke.ttf" />
     <Content Include="Content\assets\vendor\fonts\pe-icon-7-stroke\Pe-icon-7-stroke.woff" />
+    <EntityDeploy Include="Models\DB\SCEWDataModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SCEWDataModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\DB\SCEWDataModel.edmx.diagram">
+      <DependentUpon>SCEWDataModel.edmx</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -1389,10 +1457,12 @@
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\Admin\Dashboard.cshtml" />
+    <Content Include="Views\Admin\AddProduct.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
+    <Folder Include="Views\AdminBase\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -1406,6 +1476,9 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,0 +1,362 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SCEWModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="contact">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="200" />
+          <Property Name="Email" Type="varchar" MaxLength="100" />
+          <Property Name="Subject" Type="varchar" MaxLength="100" />
+          <Property Name="Message" Type="text" />
+          <Property Name="isdeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ErrorLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="InnerException" Type="varchar(max)" />
+          <Property Name="Message" Type="nvarchar(max)" />
+          <Property Name="StackTrace" Type="nvarchar(max)" />
+          <Property Name="isdeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RoleActionMaster">
+          <Key>
+            <PropertyRef Name="ActionId" />
+          </Key>
+          <Property Name="ActionId" Type="bigint" Nullable="false" />
+          <Property Name="ActionName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="Created_Date" Type="datetime" Nullable="false" />
+          <Property Name="Modified_Date" Type="datetime" />
+        </EntityType>
+        <EntityType Name="RolesAndRightsMaster">
+          <Key>
+            <PropertyRef Name="RightsId" />
+          </Key>
+          <Property Name="RightsId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleId" Type="bigint" />
+          <Property Name="ActionId" Type="bigint" />
+          <Property Name="PageId" Type="bigint" />
+          <Property Name="IsRight" Type="bit" />
+          <Property Name="Created_Date" Type="datetime" Nullable="false" />
+          <Property Name="Modified_Date" Type="datetime" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="RolesMaster">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="500" />
+          <Property Name="Created_Date" Type="datetime" Nullable="false" />
+          <Property Name="Modified_Date" Type="datetime" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="bigint" Nullable="false" />
+          <Property Name="UserAction" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Log_DateTime" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmpId" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Created_Date" Type="datetime" Nullable="false" />
+          <Property Name="Modified_Date" Type="datetime" />
+          <Property Name="RoleId" Type="int" />
+        </EntityType>
+        <Association Name="FK_RolesAndRightsMaster_RolesMaster">
+          <End Role="RolesMaster" Type="Self.RolesMaster" Multiplicity="0..1" />
+          <End Role="RolesAndRightsMaster" Type="Self.RolesAndRightsMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RolesMaster">
+              <PropertyRef Name="RoleId" />
+            </Principal>
+            <Dependent Role="RolesAndRightsMaster">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserLog_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="UserLog" Type="Self.UserLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserLog">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SCEWModelStoreContainer">
+          <EntitySet Name="contact" EntityType="Self.contact" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ErrorLog" EntityType="Self.ErrorLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RoleActionMaster" EntityType="Self.RoleActionMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RolesAndRightsMaster" EntityType="Self.RolesAndRightsMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RolesMaster" EntityType="Self.RolesMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserLog" EntityType="Self.UserLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_RolesAndRightsMaster_RolesMaster" Association="Self.FK_RolesAndRightsMaster_RolesMaster">
+            <End Role="RolesMaster" EntitySet="RolesMaster" />
+            <End Role="RolesAndRightsMaster" EntitySet="RolesAndRightsMaster" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserLog_Users" Association="Self.FK_UserLog_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserLog" EntitySet="UserLog" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SCEWModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="contact">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Subject" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="isdeleted" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ErrorLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InnerException" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="StackTrace" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="isdeleted" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RoleActionMaster">
+          <Key>
+            <PropertyRef Name="ActionId" />
+          </Key>
+          <Property Name="ActionId" Type="Int64" Nullable="false" />
+          <Property Name="ActionName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="Created_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Modified_Date" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="RolesAndRightsMaster">
+          <Key>
+            <PropertyRef Name="RightsId" />
+          </Key>
+          <Property Name="RightsId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleId" Type="Int64" />
+          <Property Name="ActionId" Type="Int64" />
+          <Property Name="PageId" Type="Int64" />
+          <Property Name="IsRight" Type="Boolean" />
+          <Property Name="Created_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Modified_Date" Type="DateTime" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" />
+          <NavigationProperty Name="RolesMaster" Relationship="Self.FK_RolesAndRightsMaster_RolesMaster" FromRole="RolesAndRightsMaster" ToRole="RolesMaster" />
+        </EntityType>
+        <EntityType Name="RolesMaster">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Created_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Modified_Date" Type="DateTime" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="RolesAndRightsMasters" Relationship="Self.FK_RolesAndRightsMaster_RolesMaster" FromRole="RolesMaster" ToRole="RolesAndRightsMaster" />
+        </EntityType>
+        <EntityType Name="UserLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int64" Nullable="false" />
+          <Property Name="UserAction" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Log_DateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="User" Relationship="Self.FK_UserLog_Users" FromRole="UserLog" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmpId" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Created_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Modified_Date" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="UserLogs" Relationship="Self.FK_UserLog_Users" FromRole="Users" ToRole="UserLog" />
+          <Property Name="RoleId" Type="Int32" />
+        </EntityType>
+        <Association Name="FK_RolesAndRightsMaster_RolesMaster">
+          <End Role="RolesMaster" Type="Self.RolesMaster" Multiplicity="0..1" />
+          <End Role="RolesAndRightsMaster" Type="Self.RolesAndRightsMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RolesMaster">
+              <PropertyRef Name="RoleId" />
+            </Principal>
+            <Dependent Role="RolesAndRightsMaster">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserLog_Users">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="UserLog" Type="Self.UserLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserLog">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SCEWEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="contacts" EntityType="Self.contact" />
+          <EntitySet Name="ErrorLogs" EntityType="Self.ErrorLog" />
+          <EntitySet Name="RoleActionMasters" EntityType="Self.RoleActionMaster" />
+          <EntitySet Name="RolesAndRightsMasters" EntityType="Self.RolesAndRightsMaster" />
+          <EntitySet Name="RolesMasters" EntityType="Self.RolesMaster" />
+          <EntitySet Name="UserLogs" EntityType="Self.UserLog" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <AssociationSet Name="FK_RolesAndRightsMaster_RolesMaster" Association="Self.FK_RolesAndRightsMaster_RolesMaster">
+            <End Role="RolesMaster" EntitySet="RolesMasters" />
+            <End Role="RolesAndRightsMaster" EntitySet="RolesAndRightsMasters" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserLog_Users" Association="Self.FK_UserLog_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserLog" EntitySet="UserLogs" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SCEWModelStoreContainer" CdmEntityContainer="SCEWEntities">
+          <EntitySetMapping Name="contacts">
+            <EntityTypeMapping TypeName="SCEWModel.contact">
+              <MappingFragment StoreEntitySet="contact">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="isdeleted" ColumnName="isdeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ErrorLogs">
+            <EntityTypeMapping TypeName="SCEWModel.ErrorLog">
+              <MappingFragment StoreEntitySet="ErrorLog">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="InnerException" ColumnName="InnerException" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="StackTrace" ColumnName="StackTrace" />
+                <ScalarProperty Name="isdeleted" ColumnName="isdeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RoleActionMasters">
+            <EntityTypeMapping TypeName="SCEWModel.RoleActionMaster">
+              <MappingFragment StoreEntitySet="RoleActionMaster">
+                <ScalarProperty Name="ActionId" ColumnName="ActionId" />
+                <ScalarProperty Name="ActionName" ColumnName="ActionName" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Created_Date" ColumnName="Created_Date" />
+                <ScalarProperty Name="Modified_Date" ColumnName="Modified_Date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RolesAndRightsMasters">
+            <EntityTypeMapping TypeName="SCEWModel.RolesAndRightsMaster">
+              <MappingFragment StoreEntitySet="RolesAndRightsMaster">
+                <ScalarProperty Name="RightsId" ColumnName="RightsId" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="ActionId" ColumnName="ActionId" />
+                <ScalarProperty Name="PageId" ColumnName="PageId" />
+                <ScalarProperty Name="IsRight" ColumnName="IsRight" />
+                <ScalarProperty Name="Created_Date" ColumnName="Created_Date" />
+                <ScalarProperty Name="Modified_Date" ColumnName="Modified_Date" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RolesMasters">
+            <EntityTypeMapping TypeName="SCEWModel.RolesMaster">
+              <MappingFragment StoreEntitySet="RolesMaster">
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Created_Date" ColumnName="Created_Date" />
+                <ScalarProperty Name="Modified_Date" ColumnName="Modified_Date" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserLogs">
+            <EntityTypeMapping TypeName="SCEWModel.UserLog">
+              <MappingFragment StoreEntitySet="UserLog">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="UserAction" ColumnName="UserAction" />
+                <ScalarProperty Name="Log_DateTime" ColumnName="Log_DateTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="SCEWModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="EmpId" ColumnName="EmpId" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Created_Date" ColumnName="Created_Date" />
+                <ScalarProperty Name="Modified_Date" ColumnName="Modified_Date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
